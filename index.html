@@ -7,6 +7,17 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://assets.adobedtm.com/e72b4113c11a/86ee37b431d3/launch-c3456896db74-development.min.js" async></script>
+<script>
+  window.digitalData = {
+    event: "",
+    product: {
+      id: "",
+      name: "",
+      price: 0,
+      quantity: 1
+    }
+  };
+</script>
 <style>
 *{box-sizing:border-box;font-family:'Inter',sans-serif;}
 
@@ -187,13 +198,19 @@ function renderProducts(){
  document.getElementById('products').innerHTML=html;
 }
 
-function addToCart(id){
- let product=products.find(p=>p.id===id);
- cart.push(product);
- updateCart();
- console.log('CJA Event → add_to_cart',product);
-}
+function addToCart(id) {
+  let product = products.find(p => p.id === id);
+  cart.push(product);
+  updateCart();
 
+  // 🔥 Adobe Tracking Object
+  window.digitalData.event = "add_to_cart";
+  window.digitalData.product.name = product.name;
+  window.digitalData.product.price = product.price;
+  window.digitalData.product.quantity = 1;
+
+  console.log("Digital Data:", window.digitalData);
+}
 function updateCart(){
  if(cart.length===0){
    document.getElementById('cartItems').innerHTML='Cart is empty';
