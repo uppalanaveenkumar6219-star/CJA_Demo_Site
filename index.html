@@ -235,14 +235,16 @@ function placeOrder() {
   }
 
   // Save cart for Adobe
-  window.lastPurchasedCart = [...cart];
+  window.lastPurchasedCart = JSON.parse(JSON.stringify(cart));
 
-  // 🔥 Fire custom event AFTER cart saved
-  document.dispatchEvent(new CustomEvent("cja_purchase"));
+  console.log("Saved purchase cart:", window.lastPurchasedCart);
+
+  // 🔥 Delay firing so Adobe always reads updated memory
+  setTimeout(() => {
+    document.dispatchEvent(new CustomEvent("cja_purchase"));
+  }, 100);
 
   alert('🎉 Order placed successfully!');
-
-  console.log('CJA Event -> purchase', window.lastPurchasedCart);
 
   cart = [];
   updateCart();
