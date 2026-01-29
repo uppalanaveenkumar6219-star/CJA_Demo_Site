@@ -229,13 +229,17 @@ function updateCart(){
 }
 
 function placeOrder(){
- if(cart.length===0){alert('Cart is empty');return;}
- alert('🎉 Order placed successfully!');
- console.log('CJA Event → purchase',cart);
- cart=[];
- updateCart();
-}
+  if(cart.length===0){alert('Cart is empty');return;}
 
+  // 🔥 Save cart for Adobe CJA BEFORE clearing
+  window.lastPurchasedCart = [...cart];
+
+  alert('🎉 Order placed successfully!');
+  console.log('CJA Event → purchase', window.lastPurchasedCart);
+
+  cart = [];
+  updateCart();
+}
 renderProducts();
 </script>
 
