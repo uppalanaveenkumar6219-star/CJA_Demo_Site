@@ -228,14 +228,21 @@ function updateCart(){
  console.log('CJA Event → cart_update',cart);
 }
 
-function placeOrder(){
-  if(cart.length===0){alert('Cart is empty');return;}
+function placeOrder() {
+  if (cart.length === 0) {
+    alert('Cart is empty');
+    return;
+  }
 
-  // 🔥 Save cart for Adobe CJA BEFORE clearing
+  // Save cart for Adobe
   window.lastPurchasedCart = [...cart];
 
+  // 🔥 Fire custom event AFTER cart saved
+  document.dispatchEvent(new CustomEvent("cja_purchase"));
+
   alert('🎉 Order placed successfully!');
-  console.log('CJA Event → purchase', window.lastPurchasedCart);
+
+  console.log('CJA Event -> purchase', window.lastPurchasedCart);
 
   cart = [];
   updateCart();
