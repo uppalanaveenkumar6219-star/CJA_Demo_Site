@@ -234,15 +234,15 @@ function placeOrder() {
     return;
   }
 
-  // Save cart for Adobe
+  // 🔥 Deep clone cart to global memory (CRITICAL FIX)
   window.lastPurchasedCart = JSON.parse(JSON.stringify(cart));
 
-  console.log("Saved purchase cart:", window.lastPurchasedCart);
+  console.log("CJA Purchase Cart:", window.lastPurchasedCart);
 
-  // 🔥 Delay firing so Adobe always reads updated memory
+  // Fire Adobe event AFTER data is safely stored
   setTimeout(() => {
     document.dispatchEvent(new CustomEvent("cja_purchase"));
-  }, 100);
+  }, 200);
 
   alert('🎉 Order placed successfully!');
 
