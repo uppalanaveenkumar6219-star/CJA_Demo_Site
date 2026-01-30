@@ -21,7 +21,127 @@ window.digitalData = {
 </script>
 
 <style>
-/* unchanged CSS */
+*{box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(180deg,#f8fafc,#eef2f7);
+  color:#0f172a;
+}
+
+header{
+  padding:60px 20px 40px;
+  text-align:center;
+}
+
+header h1{
+  font-size:44px;
+  font-weight:700;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:0 20px 60px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:25px;
+  margin-top:40px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 22px rgba(15,23,42,.08);
+  transition:.3s ease;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 16px 32px rgba(15,23,42,.12);
+}
+
+.product-img{
+  height:130px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#dbeafe,#e0f2fe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:17px;
+  font-weight:600;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+
+.price{
+  font-weight:700;
+  font-size:18px;
+}
+
+.rating{
+  color:#f59e0b;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  border:none;
+  padding:12px;
+  border-radius:14px;
+  background:#2563eb;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  color:white;
+  transition:.25s;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+.cart{
+  margin-top:50px;
+  background:white;
+  border-radius:18px;
+  padding:25px;
+  box-shadow:0 14px 30px rgba(15,23,42,.1);
+  max-width:520px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+}
+
+.total{
+  font-size:20px;
+  font-weight:700;
+  margin-top:12px;
+}
+
+.checkout{
+  background:#22c55e;
+}
+
+.checkout:hover{
+  background:#16a34a;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:#64748b;
+}
 </style>
 </head>
 
@@ -57,17 +177,11 @@ const products=[
 
 let cart=[];
 
-// ---------- PRODUCT VIEW ----------
 function fireProductView(p){
-  window.digitalData.event = "product_view";
-  window.digitalData.product.id = p.id;
-  window.digitalData.product.name = p.name;
-  window.digitalData.product.price = p.price;
-  window.digitalData.product.quantity = 1;
-  console.log("CJA → product_view",window.digitalData);
+  window.digitalData.event="product_view";
+  window.digitalData.product=p;
 }
 
-// ---------- RENDER PRODUCTS ----------
 function renderProducts(){
  let html='';
  products.forEach(p=>{
@@ -82,21 +196,13 @@ function renderProducts(){
  document.getElementById('products').innerHTML=html;
 }
 
-// ---------- ADD TO CART ----------
 function addToCart(id) {
   let product = products.find(p => p.id === id);
   cart.push(product);
   updateCart();
-
-  window.digitalData.event = "add_to_cart";
-  window.digitalData.product.name = product.name;
-  window.digitalData.product.price = product.price;
-  window.digitalData.product.quantity = 1;
-
-  console.log("CJA → add_to_cart", window.digitalData);
+  window.digitalData.event="add_to_cart";
 }
 
-// ---------- VIEW CART ----------
 function updateCart(){
  if(cart.length===0){
    document.getElementById('cartItems').innerHTML='Cart is empty';
@@ -104,8 +210,7 @@ function updateCart(){
    return;
  }
 
- window.digitalData.event = "view_cart";
- console.log("CJA → view_cart");
+ window.digitalData.event="view_cart";
 
  let html=''; let total=0;
  cart.forEach(p=>{
@@ -116,41 +221,22 @@ function updateCart(){
  document.getElementById('total').innerText='Total: ₹'+total;
 }
 
-// ---------- CHECKOUT + PAYMENT + PURCHASE ----------
 function placeOrder() {
   if (cart.length === 0) {
     alert('Cart is empty');
     return;
   }
 
-  window.digitalData.event = "checkout_start";
-  console.log("CJA → checkout_start");
-
-  window.digitalData.event = "payment_start";
-  console.log("CJA → payment_start");
-
-  window.lastPurchasedCart = JSON.parse(JSON.stringify(cart));
+  window.digitalData.event="checkout_start";
 
   setTimeout(() => {
     document.dispatchEvent(new CustomEvent("cja_purchase"));
   }, 200);
 
-  window.digitalData.event = "order_success";
-  console.log("CJA → order_success");
-
   alert('🎉 Order placed successfully!');
-
-  cart = [];
+  cart=[];
   updateCart();
 }
-
-// ---------- CART ABANDON ----------
-window.addEventListener("beforeunload", function () {
-  if (cart.length > 0) {
-    window.digitalData.event = "cart_abandon";
-    console.log("CJA → cart_abandon");
-  }
-});
 
 renderProducts();
 </script>
